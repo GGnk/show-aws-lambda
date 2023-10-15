@@ -1,14 +1,27 @@
 export interface IProduct {
+  id: string;
   description: string;
-  id: number;
   price: number;
   title: string;
   category: string;
   image: string;
   rating: {
     rate: number;
-    count: number;
   };
 }
 
 export type TProducts = IProduct[];
+
+export interface IProductStock {
+  product_id: string;
+  count: number;
+}
+
+export type TProductsStock = IProductStock[];
+
+export interface IProductWithStock extends Omit<IProduct, 'rating'> {
+  rating: {
+    rate: number;
+    count: IProductStock['count'];
+  };
+}
