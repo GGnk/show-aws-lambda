@@ -73,7 +73,7 @@ const createProduct: ValidatedEventAPIGatewayProxyEvent<any> = async (
 
   const productStockData: IProductStock = {
     product_id: productId,
-    count: payload.rating.rate,
+    count: payload.rating.count,
   };
 
   await updateProductsTable(product);

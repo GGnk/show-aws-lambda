@@ -1,8 +1,7 @@
 import type { AWS } from '@serverless/typescript';
 
-import getProductsList from '@functions/getProductsList';
-import getProductsById from '@functions/getProductsById';
-import createProduct from '@functions/createProduct';
+import { getProductsList, getProductsById, createProduct, catalogBatchProcess } from '@functions';
+import { QUEUE_NAME, TOPIC } from 'src/constants';
 
 const serverlessConfiguration: AWS = {
   service: 'product-service',
@@ -23,6 +22,9 @@ const serverlessConfiguration: AWS = {
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
       PRODUCTS_TABLE: 'aws_products',
       PRODUCTS_STOCK_TABLE: 'aws_products_stock',
+      SNS_ARN: {
+        Ref: 'SnsTopic',
+      },
     },
     iamRoleStatements: [
       {
@@ -30,9 +32,16 @@ const serverlessConfiguration: AWS = {
         Action: 'dynamodb:*',
         Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/*',
       },
+      {
+        Effect: 'Allow',
+        Action: ['sns:*'],
+        Resource: {
+          Ref: 'SnsTopic',
+        },
+      },
     ],
   },
-  functions: { getProductsList, getProductsById, createProduct },
+  functions: { getProductsList, getProductsById, createProduct, catalogBatchProcess },
   package: { individually: true },
   custom: {
     esbuild: {
@@ -72,6 +81,28 @@ const serverlessConfiguration: AWS = {
           ProvisionedThroughput: {
             ReadCapacityUnits: 3,
             WriteCapacityUnits: 3,
+          },
+        },
+      },
+      SqsQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: QUEUE_NAME,
+        },
+      },
+      SnsTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: TOPIC,
+        },
+      },
+      SnsSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'nurlan.it3@gmail.com', // TODO: for testing
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SnsTopic',
           },
         },
       },
