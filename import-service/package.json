@@ -11,11 +11,12 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.431.0",
+    "@aws-sdk/client-sqs": "^3.438.0",
     "@middy/core": "^4.6.5",
     "@middy/http-json-body-parser": "^4.6.5",
-    "prettier": "^3.0.3",
-    "@aws-sdk/client-s3": "^3.431.0",
-    "csv-parser": "^3.0.0"
+    "csv-parser": "^3.0.0",
+    "prettier": "^3.0.3"
   },
   "devDependencies": {
     "@serverless/typescript": "^3.30.1",
