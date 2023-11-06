@@ -53,6 +53,23 @@ const serverlessConfiguration: AWS = {
       host: 'vgcgj91pw6.execute-api.eu-west-1.amazonaws.com/dev',
     },
   },
+  resources: {
+    Resources: {
+      GatewayResponse: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+          },
+          ResponseType: 'DEFAULT_4XX',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi',
+          },
+        },
+      },
+    },
+  },
 };
 
 module.exports = serverlessConfiguration;
